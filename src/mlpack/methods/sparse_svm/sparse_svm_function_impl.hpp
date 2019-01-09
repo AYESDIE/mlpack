@@ -43,14 +43,14 @@ void SparseSVMFunction::Shuffle()
 }
 
 double SparseSVMFunction::Evaluate(const arma::mat& parameters,
-    const size_t firstId,
-    const size_t batchSize)
+                                   const size_t firstId,
+                                   const size_t batchSize)
 {
   // The hinge loss function.
   const size_t lastId = firstId + batchSize - 1;
   return arma::accu(arma::max(0.0, 1 - labels.subvec(firstId, lastId) %
-                                       dataset.cols(firstId, lastId) *
-                                       arma::repmat(parameters, 1, batchSize).t()));
+      dataset.cols(firstId, lastId) *
+      arma::repmat(parameters, 1, batchSize).t()));
 }
 
 template <typename GradType>
