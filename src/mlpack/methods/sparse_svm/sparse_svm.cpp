@@ -51,11 +51,9 @@ double SparseSVM::Train(const arma::mat& data,
   if (parameters.is_empty())
     parameters = svm.InitialPoint();
 
-  ens::RMSProp rms;
-
   // Train the model.
   Timer::Start("sparse_svm_optimization");
-  const double out = rms.Optimize(svm, parameters);
+  const double out = optimizer.Optimize(svm, parameters);
   Timer::Stop("sparse_svm_optimization");
 
   Log::Info << "SparseSVM::SparseSVM(): final objective of "
