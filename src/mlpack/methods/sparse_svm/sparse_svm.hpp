@@ -2,7 +2,7 @@
  * @file sparse_svm.hpp
  * @author Ayush Chamoli
  *
- * An implementation of softmax regression.
+ * An implementation of Sparse SVM.
  *
  * mlpack is free software; you may redistribute it and/or modify it under the
  * terms of the 3-clause BSD license.  You should have received a copy of the
