@@ -112,7 +112,6 @@ class SparseSVMFunction
 } // namespace svm
 } // namespace mlpack
 
-
 // Include implementation
 #include "sparse_svm_function_impl.hpp"
 
