@@ -13,13 +13,19 @@
 #ifndef MLPACK_METHODS_SPARSE_SVM_SPARSE_SVM_FUNCTION_IMPL_HPP
 #define MLPACK_METHODS_SPARSE_SVM_SPARSE_SVM_FUNCTION_IMPL_HPP
 
+#include <mlpack/core/math/make_alias.hpp>
+#include <mlpack/core/math/shuffle_data.hpp>
+
 // In case it hasn't been included yet.
 #include "sparse_svm_function.hpp"
 
+namespace mlpack {
+namespace svm {
+
 SparseSVMFunction::SparseSVMFunction(
-    const arma::sp_mat& dataset, const arma::vec& labels) :
-    dataset(dataset),
-    labels(math::MakeAlias(const_cast<arma::vec&>(labels), false))
+  const arma::sp_mat& dataset, const arma::vec& labels) :
+  dataset(dataset),
+  labels(math::MakeAlias(const_cast<arma::vec&>(labels), false))
 { /* Nothing to do */ }
 
 void SparseSVMFunction::Shuffle()
@@ -43,30 +49,57 @@ double SparseSVMFunction::Evaluate(const arma::mat& parameters,
   // The hinge loss function.
   const size_t lastId = firstId + batchSize - 1;
   return arma::accu(arma::max(0.0, 1 - labels.subvec(firstId, lastId) %
-      dataset.cols(firstId, lastId) *
-      arma::repmat(parameters, 1, batchSize).t()));
+                                       dataset.cols(firstId, lastId) *
+                                       arma::repmat(parameters, 1, batchSize).t()));
 }
 
 template <typename GradType>
-void SparseSVMFunction::Gradient(const arma::mat& parameters,
-                                 const size_t firstId,
-                                 GradType& gradient,
-                                 const size_t batchSize)
+void SparseSVMFunction::Gradient(
+  const arma::mat& parameters,
+  const size_t firstId,
+  GradType& gradient,
+  const size_t batchSize)
 {
   // Evaluate the gradient of the hinge loss function.
   const size_t lastId = firstId + batchSize - 1;
   arma::vec dots = 1 - labels.subvec(firstId, lastId) %
-      dataset.cols(firstId, lastId) *
-      arma::repmat(parameters, 1, batchSize).t();
+                       dataset.cols(firstId, lastId) *
+                       arma::repmat(parameters, 1, batchSize).t();
   gradient = GradType(parameters.n_rows, 1);
   for (size_t i = 0; i < batchSize; ++i)
   {
     if (dots[i] >= 0)
     {
       // Is this correct?
-      gradient += -1 * GradType(dataset.col(id) * labels(id));
+      gradient += -1 * GradType(dataset.col(firstId) * labels(firstId));
     }
   }
+}
+
+template <typename GradType>
+double SparseSVMFunction::EvaluateWithGradient(const arma::mat& parameters,
+                                               const size_t firstId,
+                                               GradType& gradient,
+                                               const size_t batchSize) const
+{
+  const size_t lastId = firstId + batchSize - 1;
+  arma::vec dots = 1 - labels.subvec(firstId, lastId) %
+                       dataset.cols(firstId, lastId) *
+                       arma::repmat(parameters, 1, batchSize).t();
+  gradient = arma::mat(parameters.n_rows, 1);
+  for (size_t i = 0; i < batchSize; ++i)
+  {
+    if (dots[i] >= 0)
+    {
+      // Is this correct?
+      gradient += -1 * arma::mat(dataset.col(firstId) * labels(firstId));
+    }
+  }
+
+  // The hinge loss function.
+  return arma::accu(arma::max(0.0, 1 - labels.subvec(firstId, lastId) %
+                                       dataset.cols(firstId, lastId) *
+                                       arma::repmat(parameters, 1, batchSize).t()));
 }
 
 size_t SparseSVMFunction::NumFunctions()
@@ -75,5 +108,9 @@ size_t SparseSVMFunction::NumFunctions()
   // is a data dependent function.
   return dataset.n_cols;
 }
+
+}
+}
+
 
 #endif // MLPACK_METHODS_SPARSE_SVM_SPARSE_SVM_FUNCTION_IMPL_HPP

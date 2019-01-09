@@ -15,6 +15,9 @@
 
 #include <mlpack/prereqs.hpp>
 
+namespace mlpack {
+namespace svm {
+
 class SparseSVMFunction
 {
  public:
@@ -33,17 +36,17 @@ class SparseSVMFunction
    * Evaluate the hinge loss function on the specified datapoints.
    *
    * @param parameters The parameters of the SVM.
-   * @param startId First index of the datapoints to use for function
+   * @param firstId Index of the datapoints to use for function
    *      evaluation.
    * @param batchSize Size of batch to process.
    * @return The value of the loss function at the given parameters.
    */
   double Evaluate(const arma::mat& parameters,
-                  const size_t startId,
+                  const size_t firstId,
                   const size_t batchSize = 1);
 
   /**
-   * Evaluate the gradient the gradient of the hinge loss function, following
+   * Evaluate the gradient of the hinge loss function, following
    * the SparseFunctionType requirements on the Gradient function.
    *
    * @param parameters The parameters of the SVM.
@@ -56,6 +59,26 @@ class SparseSVMFunction
                 const size_t firstId,
                 GradType& gradient,
                 const size_t batchSize = 1);
+
+  /**
+   * Evaluate the gradient of the hinge loss function, following
+   * the SparseFunctionType requirements on the Gradient function
+   * followed by evaluation of the hinge loss function on the specified
+   * datapoints.
+   *
+   * @tparam GradType
+   * @param parameters The parameters of the SVM.
+   * @param firstId Index of the datapoint to use for the gradient and function
+   * evaluation.
+   * @param gradient Sparse matrix to output the gradient into.
+   * @param batchSize Size of the batch to process.
+   * @return The value of the loss function at the given parameters.
+   */
+  template <typename GradType>
+  double EvaluateWithGradient(const arma::mat& parameters,
+                              const size_t firstId,
+                              GradType& gradient,
+                              const size_t batchSize = 1) const;
 
   //! Return the initial point for the optimization.
   const arma::mat& InitialPoint() const { return initialPoint; }
@@ -85,6 +108,10 @@ class SparseSVMFunction
   //! The labels, y_i.
   arma::vec labels;
 };
+
+} // namespace svm
+} // namespace mlpack
+
 
 // Include implementation
 #include "sparse_svm_function_impl.hpp"
