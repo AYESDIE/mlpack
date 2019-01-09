@@ -23,9 +23,9 @@ namespace mlpack {
 namespace svm {
 
 SparseSVMFunction::SparseSVMFunction(
-   const arma::sp_mat& dataset, const arma::vec& labels) :
-   dataset(dataset),
-   labels(math::MakeAlias(const_cast<arma::vec&>(labels), false))
+  const arma::sp_mat& dataset, const arma::vec& labels) :
+  dataset(dataset),
+  labels(math::MakeAlias(const_cast<arma::vec&>(labels), false))
 { /* Nothing to do */ }
 
 void SparseSVMFunction::Shuffle()
