@@ -27,19 +27,31 @@ SparseSVM::SparseSVM(
   Train(data, labels, optimizer);
 }
 
-void SparseSVM::Classify(const arma::mat &dataset,
-                         arma::mat &probabilities)
+void SparseSVM::Classify(const arma::mat& dataset,
+                         arma::Row<size_t>& labels)
     const
 {
-  if (dataset.n_rows != FeatureSize())
-  {
-    std::ostringstream oss;
-    oss << "SparseSVM::Classify(): dataset has " << dataset.n_rows
-        << " dimensions, but model has " << FeatureSize() << " dimensions!";
-    throw std::invalid_argument(oss.str());
-  }
+  labels = arma::sign(parameters.cols(dataset.n_elem) * dataset +
+                      parameters.tail_cols(dataset.n_elem));
+}
 
-  /* To be made */
+double SparseSVM::ComputeAccuracy(const arma::mat& testData,
+                                  const arma::Row<size_t>& testLabels)
+    const
+{
+  arma::Row<size_t> labels;
+
+  // Get predictions for the provided data.
+  Classify(testData, labels);
+
+  // Increment count for every correctly predicted label.
+  size_t count = 0;
+  for (size_t i = 0; i < labels.n_elem ; i++)
+    if (testLabels(i))
+      count++;
+
+  // Return percentage accuracy
+  return (count * 100.0) / labels.n_elem;
 }
 
 template <typename OptimizerType>

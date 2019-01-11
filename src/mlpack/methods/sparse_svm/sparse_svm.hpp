@@ -38,13 +38,29 @@ class SparseSVM
             OptimizerType optimizer = OptimizerType());
 
   /**
- * Classify the given points, returning class probabilities for each point.
- *
- * @param dataset Matrix of data points to be classified.
- * @param probabilities Class probabilities for each point.
- */
+   * Classify the given points, returning  predicted class label ({-1, 1})
+   * for each data point.
+   * The function calculates the (w * x + b) for a given data point. It then
+   * chooses the class between {-1, 1} depending upon the result is positive
+   * or negative.
+   *
+   * @param dataset Matrix of data points to be classified.
+   * @param labels Predicted labels for each point.
+   */
   void Classify(const arma::mat& dataset,
-                arma::mat& probabilities) const;
+                arma::Row<size_t>& labels) const;
+
+  /**
+   * Computes accuracy of the learned model given the feature data and the
+   * labels associated with each data point. Predictions are made using the
+   * provided data and are compared with the actual labels.
+   *
+   * @param testData Matrix of data points using which predictions are made.
+   * @param testLabels Vector of labels associated with the data.
+   * @return Accuracy of the model.
+   */
+  double ComputeAccuracy(const arma::mat& testData,
+                         const arma::Row<size_t>& testLabels) const;
 
   /**
    * Train the Sparse SVM with the given training data.
@@ -64,9 +80,6 @@ class SparseSVM
   arma::mat& Parameters() { return parameters; }
   //! Get the model parameters.
   const arma::mat& Parameters() const { return parameters; }
-
-  //! Gets the features size of the training data
-  size_t FeatureSize() const { return parameters.n_cols; }
 
   /**
    * Serialize the SparseSVM model.
