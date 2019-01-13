@@ -48,9 +48,10 @@ double SparseSVMFunction::Evaluate(const arma::mat& parameters,
 {
   // The hinge loss function.
   const size_t lastId = firstId + batchSize - 1;
-  return arma::accu(arma::max(0.0, 1 - labels.subvec(firstId, lastId) %
-      dataset.cols(firstId, lastId) *
-      arma::repmat(parameters, 1, batchSize).t()));
+  arma::vec dots = 1 - labels.subvec(firstId, lastId) %
+       dataset.cols(firstId, lastId) *
+       arma::repmat(parameters, 1, batchSize).t();
+  return arma::accu(arma::clamp(dots, 0.0, dots.max()));
 }
 
 template <typename GradType>
@@ -97,9 +98,7 @@ double SparseSVMFunction::EvaluateWithGradient(const arma::mat& parameters,
   }
 
   // The hinge loss function.
-  return arma::accu(arma::max(0.0, 1 - labels.subvec(firstId, lastId) %
-                                       dataset.cols(firstId, lastId) *
-                                       arma::repmat(parameters, 1, batchSize).t()));
+  return arma::accu(arma::clamp(dots, 0.0, dots.max()));
 }
 
 size_t SparseSVMFunction::NumFunctions()
