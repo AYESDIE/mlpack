@@ -31,8 +31,12 @@ void SparseSVM::Classify(const arma::mat& dataset,
                          arma::Row<size_t>& labels)
     const
 {
-  labels = arma::sign(parameters.cols(dataset.n_elem) * dataset +
-                      parameters.tail_cols(dataset.n_elem));
+  arma::mat predictions = parameters.head_cols(dataset.n_elem) * dataset +
+      parameters.tail_cols(dataset.n_elem);
+
+  // Classify each point of dataset into {-1, 1} depending whether
+  // predictions is positive or negative.
+  labels = arma::sign(arma::conv_to<arma::Row<size_t>>::from(predictions));
 }
 
 double SparseSVM::ComputeAccuracy(const arma::mat& testData,
