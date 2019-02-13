@@ -78,12 +78,12 @@ PROGRAM_INFO("Linear Support Vector Machine",
      "For example, to train a linear svm model on the data " +
      PRINT_DATASET("dataset") + " with labels " + PRINT_DATASET("labels") +
      " with a maximum of 1000 iterations for training, saving the trained model "
-     "to " + PRINT_MODEL("sr_model") + ", the following command can be used: "
+     "to " + PRINT_MODEL("svm_model") + ", the following command can be used: "
      "\n\n" +
      PRINT_CALL("linear_svm", "training", "dataset", "labels", "labels",
          "lambda", 0.1, "output_model", "lsvm_model") +
      "\n\n"
-     "Then, to use " + PRINT_MODEL("sr_model") + " to classify the test points "
+     "Then, to use " + PRINT_MODEL("svm_model") + " to classify the test points "
      "in " + PRINT_DATASET("test_points") + ", saving the output predictions to"
      " " + PRINT_DATASET("predictions") + ", the following command can be used:"
      "\n\n" +
@@ -144,8 +144,6 @@ void TestSVM(const size_t numClasses, const Model& model);
 static void mlpackMain()
 {
   // Collect command-line options.
-  const double lambda = CLI::GetParam<double>("lambda");
-  const double tolerance = CLI::GetParam<double>("tolerance");
   const size_t maxIterations = (size_t) CLI::GetParam<int>("max_iterations");
 
   // One of training and input_model must be specified.
