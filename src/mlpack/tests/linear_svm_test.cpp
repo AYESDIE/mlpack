@@ -441,9 +441,9 @@ BOOST_AUTO_TEST_CASE(LinearSVMFunctionSeparableGradient)
 
 /**
  * Test training of linear svm on a simple dataset using
- * Parallel SGD optimizer.
+ * GradientDescent optimizer.
  */
-BOOST_AUTO_TEST_CASE(LinearSVMPSGDSimpleTest)
+BOOST_AUTO_TEST_CASE(LinearSVMGradientDescentSimpleTest)
 {
   // A very simple fake dataset
   arma::mat dataset = "2 0 0;"
@@ -455,10 +455,10 @@ BOOST_AUTO_TEST_CASE(LinearSVMPSGDSimpleTest)
   //  Corresponding labels
   arma::Row<size_t> labels = "1 0 1";
 
-  // Create a linear svm object using a custom Parallel
-  // SGD object.
-  ens::ParallelSGD<> psgd(500000, 3, 1e-5);
-  LinearSVM<arma::mat> lsvm(dataset, labels, 2, 0.0001, psgd);
+  // Create a linear svm object using a default
+  // GradientDescent object.
+  LinearSVM<arma::mat> lsvm(dataset, labels, 2, 0.0001,
+      ens::GradientDescent());
 
   // Compare training accuracy to 100.
   const double acc = lsvm.ComputeAccuracy(dataset, labels);
@@ -491,9 +491,9 @@ BOOST_AUTO_TEST_CASE(LinearSVMLGFGSSimpleTest)
 
 /**
  * Test training of linear svm for two classes on a complex gaussian dataset
- * using Parallel SGD optimizer.
+ * using GradientDescent optimizer.
  */
-BOOST_AUTO_TEST_CASE(LinearSVMPSGDTwoClasses)
+BOOST_AUTO_TEST_CASE(LinearSVMGradientDescentTwoClasses)
 {
   const size_t points = 1000;
   const size_t inputSize = 3;
@@ -518,9 +518,10 @@ BOOST_AUTO_TEST_CASE(LinearSVMPSGDTwoClasses)
     labels(i) = 1;
   }
 
-  // Train linear svm object using Parallel SGD optimizer.
-  ens::ParallelSGD<> psgd(1000, 1000, 1e-5);
-  LinearSVM<arma::mat> lsvm(data, labels, numClasses, lambda, psgd);
+  // Train linear svm object using GradientDescent
+  // optimizer.
+  LinearSVM<arma::mat> lsvm(data, labels, numClasses, lambda,
+      ens::GradientDescent());
 
   // Compare training accuracy to 100.
   const double acc = lsvm.ComputeAccuracy(data, labels);
