@@ -53,7 +53,7 @@ class CopyTask
    *
    * @param maxLength Maximum length of sequence
    *                  that has to be repeated by model.
-   * @param nRepeats Number of repeates required to solve the task.
+   * @param nRepeats Number of repeats required to solve the task.
    * @param addSeparator Flag indicating whether generator
    *                     should emit separating symbol after input sequence.
    */

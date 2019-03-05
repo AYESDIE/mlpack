@@ -25,7 +25,7 @@ namespace tasks /* Task utilities for augmented */ {
 /**
  * Generator of instances of the binary addition task.
  * The parameters are:
- * - macimum binary length;
+ * - Maximum binary length;
  * 
  * Every element of sequence is encoded as 1-dimensional vector
  * (possible vector elements are {0, 1, 0.5} -
@@ -85,7 +85,7 @@ class AddTask
    * on the final stage of Generate function.
    * 
    * @param input Reference parameter with intermediate representations,
-   *              in which 0 and 1 corrrespond to the corresponding number bits,
+   *              in which 0 and 1 correspond to the corresponding number bits,
    *              and 2 corresponds to `+` sign, which acts as a separator.
    * @param output Reference parameter for storing final representations. 
    */
